@@ -1,0 +1,69 @@
+.row
+  .col
+    h3.pb-4 기본요금 설정
+  .col.text-right
+    button.btn.btn-primary((click)='open(addSeason)')
+      i.fa.fa-plus.mr-2
+      span 시즌추가
+
+ngb-tabset
+  ngb-tab(*ngFor='let season of SEASONS', [title]='season.title')
+    ng-template(ngbTabContent='')
+      .p-4
+        dl.row
+          dt.col-md-2 시즌명
+          dd.col-md-10 {{ season.title }}
+          dt.col-md-2 기간
+          dd.col-md-10(*ngIf='season.title === "비수기"') 설정된 기간 외의 모든 날짜에는 비수기 가격이 적용됩니다.
+          dd.col-md-10(*ngIf='season.title !== "비수기"')
+            form.form-inline.mb-2(*ngFor='let period of season.periods; let period_index = index')
+              .form-group.mr-2
+                .input-group
+                  span.input-group-addon 시작일
+                  input.form-control(placeholder='yyyy-mm-dd', size='11', name='startDate', [(ngModel)]='period.startDate', ngbDatepicker='', #dStart='ngbDatepicker')
+                  button.input-group-addon((click)='dStart.toggle()', type='button')
+                    i.fa.fa-calendar
+              .form-group.mr-2
+                .input-group
+                  span.input-group-addon 종료일
+                  input.form-control(placeholder='yyyy-mm-dd', size='11', name='endDate', [(ngModel)]='period.endDate', ngbDatepicker='', #dEnd='ngbDatepicker')
+                  button.input-group-addon((click)='dEnd.toggle()', type='button')
+                    i.fa.fa-calendar
+              //- button.btn.btn-outline-secondary((click)='deletePeriod(season, period_index)', [disabled]='season.periods.length <= 1')
+              button.btn.btn-outline-secondary(*ngIf='season.periods.length !== 1', (click)='deletePeriod(season, period_index)')
+                i.fa.fa-times.mr-1
+                span 삭제 {{season.periods.length}}
+            button.btn.btn-outline-primary((click)='addPeriod(season)')
+              i.fa.fa-plus.mr-1
+              span 기간추가
+          table.table.table-sm.mt-4
+            thead
+              tr
+                th.text-center.w-25 객실명
+                th.text-center 주중
+                th.text-center 금요일
+                th.text-center 토요일(공휴일전날)
+            tbody
+              tr(*ngFor='let room of season.prices')
+                td.align-middle.text-center {{room[0]}}
+                td.text-center                  
+                  input.text-center.form-control(type='text', [ngModel]='room[1] | number', (blur)='changePrice($event.target.value, room, 1)')
+                td
+                  input.text-center.form-control(type='text', [ngModel]='room[2] | number', (blur)='changePrice($event.target.value, room, 2)')
+                td
+                  input.text-center.form-control(type='text', [ngModel]='room[3] | number', (blur)='changePrice($event.target.value, room, 3)')
+
+        //- TODO: Remove this; testing purpose only
+        //- .bg-light.p-2.my-4.small
+          pre.
+            season: {{ season | json }}
+
+ng-template(#addSeason='', let-c='close', let-d='dismiss')
+  .modal-header
+    h4.modal-title Modal title
+    button.close(type='button', aria-label='Close', (click)="d('Cross click')")
+      span(aria-hidden='true') ×
+  .modal-body
+    p One fine body…
+  .modal-footer
+    button.btn.btn-outline-light(type='button', (click)="c('Close click')") Close
