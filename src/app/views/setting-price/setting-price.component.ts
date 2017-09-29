@@ -60,6 +60,8 @@ export class CustomDatepickerI18n extends NgbDatepickerI18n {
 
 export class SettingPriceComponent implements OnInit {
 
+  CreateSeason = false;
+
   // Bootstrap Modal close result
   closeResult: string;
 

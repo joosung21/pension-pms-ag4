@@ -2,11 +2,11 @@
   .col
     h3.pb-4 기본요금 설정
   .col.text-right
-    button.btn.btn-primary((click)='open(addSeason)')
+    button.btn.btn-primary((click)='CreateSeason = true')
       i.fa.fa-plus.mr-2
       span 시즌추가
 
-ngb-tabset
+ngb-tabset(*ngIf='!CreateSeason')
   ngb-tab(*ngFor='let season of SEASONS', [title]='season.title')
     ng-template(ngbTabContent='')
       .p-4
@@ -16,7 +16,7 @@ ngb-tabset
           dt.col-md-2 기간
           dd.col-md-10(*ngIf='season.title === "비수기"') 설정된 기간 외의 모든 날짜에는 비수기 가격이 적용됩니다.
           dd.col-md-10(*ngIf='season.title !== "비수기"')
-            form.form-inline.mb-2(*ngFor='let period of season.periods; let period_index = index')
+            .form-inline.mb-2(*ngFor='let period of season.periods; let period_index = index')
               .form-group.mr-2
                 .input-group
                   span.input-group-addon 시작일
@@ -28,11 +28,10 @@ ngb-tabset
                   span.input-group-addon 종료일
                   input.form-control(placeholder='yyyy-mm-dd', size='11', name='endDate', [(ngModel)]='period.endDate', ngbDatepicker='', #dEnd='ngbDatepicker')
                   button.input-group-addon((click)='dEnd.toggle()', type='button')
-                    i.fa.fa-calendar
-              //- button.btn.btn-outline-secondary((click)='deletePeriod(season, period_index)', [disabled]='season.periods.length <= 1')
-              button.btn.btn-outline-secondary(*ngIf='season.periods.length !== 1', (click)='deletePeriod(season, period_index)')
+                    i.fa.fa-calendar              
+              button.btn.btn-outline-secondary(*ngIf='season.periods.length > 1', (click)='deletePeriod(season, period_index)')
                 i.fa.fa-times.mr-1
-                span 삭제 {{season.periods.length}}
+                span 삭제            
             button.btn.btn-outline-primary((click)='addPeriod(season)')
               i.fa.fa-plus.mr-1
               span 기간추가
@@ -58,12 +57,53 @@ ngb-tabset
           pre.
             season: {{ season | json }}
 
-ng-template(#addSeason='', let-c='close', let-d='dismiss')
-  .modal-header
-    h4.modal-title Modal title
-    button.close(type='button', aria-label='Close', (click)="d('Cross click')")
-      span(aria-hidden='true') ×
-  .modal-body
-    p One fine body…
+
+
+
+
+
+
+
+
+
+
+
+
+// Modal           
+
+//- ng-template(#addSeason='', let-c='close', let-d='dismiss')
+//-   .modal-header
+//-     h4.modal-title 시즌추가
+//-     button.close(type='button', aria-label='Close', (click)="d('Cross click')")
+//-       span(aria-hidden='true') ×
+//-   .modal-body    
+//-     form
+//-       .form-group
+//-         label(for='title') 시즌명
+//-         input.form-control(type='text', placeholder='추석황금연휴')
+//-       .form-inline.mb-2
+//-         .form-group.mr-2
+//-           .input-group
+//-             span.input-group-addon 시작일
+//-             input.form-control(placeholder='yyyy-mm-dd', size='11', name='startDate', ngbDatepicker='', #dStart='ngbDatepicker')
+//-             button.input-group-addon((click)='dStart.toggle()', type='button')
+//-               i.fa.fa-calendar
+//-         .form-group.mr-2
+//-           .input-group
+//-             span.input-group-addon 종료일
+//-             input.form-control(placeholder='yyyy-mm-dd', size='11', name='endDate', ngbDatepicker='', #dEnd='ngbDatepicker')
+//-             button.input-group-addon((click)='dEnd.toggle()', type='button')
+//-               i.fa.fa-calendar              
+//-         button.btn.btn-outline-secondary
+//-           i.fa.fa-times.mr-1
+//-           span 삭제    
+//-       button.btn.btn-outline-primary
+//-         i.fa.fa-plus.mr-1
+//-         span 기간추가
+
+
+
+
   .modal-footer
-    button.btn.btn-outline-light(type='button', (click)="c('Close click')") Close
+    button.btn.btn-light(type='button', (click)="c('Close click')") 취소
+    button.btn.btn-primary(type='button', (click)="addSeason()") 저장하기
